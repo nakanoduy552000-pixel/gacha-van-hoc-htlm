@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gacha Văn Học - Thử Thách Vận Mệnh & Tri Thức (Văn 10 & 11)</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@600;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: #0f172a;
+            color: #f8fafc;
+            min-height: 100vh;
+            user-select: none;
+        }
+        .font-title {
+            font-family: 'Comfortaa', cursive;
+        }
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.8); }
+        ::-webkit-scrollbar-thumb { background: #8b5cf6; border-radius: 3px; }
+
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 20px rgba(168, 85, 247, 0.4); }
+            50% { box-shadow: 0 0 35px rgba(236, 72, 153, 0.8); }
+        }
+        .animate-glow {
+            animation: pulseGlow 2s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen justify-between relative bg-gradient-to-br from-slate-950 via-purple-950 to-indigo-950 overflow-x-hidden">
+
+    <!-- NAV BAR -->
+    <header class="w-full glass-panel sticky top-0 z-50 px-4 py-3 border-b border-purple-500/20">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-3 cursor-pointer" onclick="showScreen('gacha-screen')">
+                <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-purple-600 to-pink-500 flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-purple-500/30">
+                    <i class="fa-solid fa-book-bookmark"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg md:text-xl font-bold font-title bg-clip-text text-transparent bg-gradient-to-r from-purple-300 via-pink-300 to-amber-300">
+                        GACHA VĂN HỌC 10 & 11
+                    </h1>
+                    <p class="text-[10px] text-purple-300/80 uppercase tracking-widest font-semibold">Thử Thách Vận Mệnh & Tri Thức</p>
+                </div>
+            </div>
+
+            <!-- Grade Filter Selector -->
+            <div class="flex items-center gap-2 bg-slate-900/80 p-1 rounded-xl border border-purple-500/30">
+                <button id="btn-grade-all" onclick="setGradeFilter('ALL')" class="px-2.5 py-1 rounded-lg text-xs font-bold transition bg-purple-600 text-white">Tất Cả</button>
+                <button id="btn-grade-10" onclick="setGradeFilter('10')" class="px-2.5 py-1 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white">Lớp 10</button>
+                <button id="btn-grade-11" onclick="setGradeFilter('11')" class="px-2.5 py-1 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white">Lớp 11</button>
+            </div>
+
+            <!-- Stats / Account -->
+            <div id="user-nav-box" class="flex items-center gap-2">
+                <button onclick="openStatsModal()" class="px-3 py-1.5 rounded-xl bg-purple-600/30 hover:bg-purple-600/50 text-purple-300 border border-purple-500/40 text-xs font-bold transition">
+                    <i class="fa-solid fa-trophy mr-1 text-amber-400"></i> Thành Tích
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN APP CONTAINER -->
+    <main class="flex-1 max-w-5xl w-full mx-auto p-4 sm:p-6 flex flex-col justify-center relative z-10">
+
+        <!-- GACHA WHEEL SCREEN -->
+        <section id="gacha-screen" class="w-full space-y-6 text-center">
+            <div class="space-y-2 max-w-xl mx-auto">
+                <span id="current-grade-badge" class="px-3 py-1 rounded-full bg-purple-500/20 border border-purple-500/40 text-purple-300 text-xs font-bold uppercase tracking-wider">
+                    Chương Trình Ngữ Văn 10 & 11
+                </span>
+                <h2 class="text-2xl sm:text-4xl font-extrabold font-title text-white">
+                    Rút Đề Thi Ngữ Văn
+                </h2>
+                <p class="text-slate-300 text-xs sm:text-sm">
+                    Quay ngẫu nhiên tác phẩm trong chương trình THPT! Bài <span class="text-emerald-400 font-bold">HÊN (Dễ)</span> hoặc thử thách <span class="text-rose-400 font-bold">XUI (Khó)</span>.
+                </p>
+            </div>
+
+            <!-- GACHA WHEEL BOX -->
+            <div class="relative w-64 h-64 sm:w-80 sm:h-80 mx-auto my-6 flex items-center justify-center">
+                <div class="absolute inset-0 rounded-full bg-gradient-to-tr from-purple-600/30 via-pink-500/20 to-amber-500/30 blur-2xl animate-pulse"></div>
+                
+                <div id="gacha-dial" class="w-full h-full rounded-full border-4 border-purple-500/50 bg-slate-900/90 flex items-center justify-center relative overflow-hidden shadow-2xl transition-transform duration-[3000ms] cubic-bezier(0.15, 0.85, 0.35, 1.2)">
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <div class="w-full h-0.5 bg-purple-500/30"></div>
+                        <div class="h-full w-0.5 bg-purple-500/30"></div>
+                    </div>
+                    
+                    <div class="absolute top-6 text-emerald-400 font-extrabold text-xs tracking-wider uppercase">🎉 Hên: Cơ Bản</div>
+                    <div class="absolute bottom-6 text-rose-400 font-extrabold text-xs tracking-wider uppercase">💀 Xui: Nâng Cao</div>
+                    <div class="absolute left-4 text-purple-300 font-extrabold text-xs uppercase -rotate-90">Lớp 10</div>
+                    <div class="absolute right-4 text-amber-300 font-extrabold text-xs uppercase rotate-90">Lớp 11</div>
+
+                    <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-slate-950 border-2 border-pink-500/60 flex flex-col items-center justify-center z-10 shadow-inner p-2">
+                        <i class="fa-solid fa-dice-d20 text-3xl sm:text-4xl text-pink-400 mb-1"></i>
+                        <span class="text-[10px] font-bold text-slate-300">GACHA</span>
+                    </div>
+                </div>
+
+                <div class="absolute -top-3 left-1/2 -translate-x-1/2 text-pink-500 text-3xl z-20">
+                    <i class="fa-solid fa-caret-down"></i>
+                </div>
+            </div>
+
+            <div>
+                <button id="spin-btn" onclick="spinGacha()" class="px-8 py-4 rounded-2xl bg-gradient-to-r from-purple-600 via-pink-600 to-amber-500 hover:brightness-110 active:scale-95 font-extrabold text-base text-white shadow-xl shadow-purple-600/40 transition-all animate-glow">
+                    <i class="fa-solid fa-gift mr-2"></i> QUAY ĐỀ NGAY!
+                </button>
+            </div>
+        </section>
+
+        <!-- EXAM SCREEN -->
+        <section id="exam-screen" class="hidden w-full space-y-6">
+            <div id="exam-badge-container" class="glass-panel p-4 rounded-2xl flex flex-wrap justify-between items-center gap-3 border border-purple-500/30">
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span id="exam-luck-tag" class="px-3 py-0.5 rounded-full text-xs font-black uppercase tracking-wider bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                            HÊN (BÀI DỄ)
+                        </span>
+                        <span id="exam-grade-tag" class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+                            Lớp 10
+                        </span>
+                        <h3 id="exam-topic-title" class="text-lg sm:text-xl font-bold font-title text-white">
+                            Tác phẩm
+                        </h3>
+                    </div>
+                    <p id="exam-topic-desc" class="text-xs text-slate-300 mt-1">
+                        Hoàn thành 7 câu trắc nghiệm và 2 câu tự luận để tích lũy điểm thưởng.
+                    </p>
+                </div>
+
+                <button onclick="confirmCancelExam()" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs text-slate-300 border border-slate-700">
+                    Hủy Bài
+                </button>
+            </div>
+
+            <!-- TEXT EXCERPT DISPLAY BOX -->
+            <div id="poem-excerpt-box" class="hidden bg-slate-900/90 border border-amber-500/30 rounded-2xl p-4 sm:p-5 shadow-lg space-y-2">
+                <div class="flex items-center gap-2 text-amber-400 font-bold text-xs uppercase tracking-wider">
+                    <i class="fa-solid fa-quote-left"></i>
+                    <span>Văn bản / Đoạn trích tác phẩm</span>
+                </div>
+                <div id="poem-excerpt-content" class="text-slate-200 text-xs sm:text-sm font-serif italic leading-relaxed whitespace-pre-line bg-slate-950/60 p-4 rounded-xl border border-slate-800/80 max-h-60 overflow-y-auto">
+                </div>
+            </div>
+
+            <!-- Tab Navigation -->
+            <div class="flex gap-2 border-b border-slate-800 pb-2">
+                <button id="tab-mcq-btn" onclick="switchExamTab('mcq')" class="px-4 py-2 rounded-xl bg-purple-600 text-white font-bold text-xs sm:text-sm flex items-center gap-2 transition">
+                    <i class="fa-solid fa-list-check"></i> Phần 1: Trắc Nghiệm (7 Câu)
+                </button>
+                <button id="tab-essay-btn" onclick="switchExamTab('essay')" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-400 hover:text-white font-bold text-xs sm:text-sm flex items-center gap-2 transition">
+                    <i class="fa-solid fa-pen-nib"></i> Phần 2: Tự Luận (2 Câu)
+                </button>
+            </div>
+
+            <!-- MCQ SECTION -->
+            <div id="part-mcq" class="space-y-4">
+                <div id="mcq-container" class="space-y-4"></div>
+                <div class="flex justify-end pt-2">
+                    <button onclick="switchExamTab('essay')" class="px-5 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 font-bold text-xs sm:text-sm text-white">
+                        Chuyển Sang Tự Luận <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- ESSAY SECTION -->
+            <div id="part-essay" class="hidden space-y-4">
+                <div id="essay-container" class="space-y-6"></div>
+                <div class="pt-4 border-t border-slate-800 flex justify-between items-center">
+                    <button onclick="switchExamTab('mcq')" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs text-slate-300 border border-slate-700">
+                        <i class="fa-solid fa-arrow-left mr-1"></i> Quay lại Trắc Nghiệm
+                    </button>
+                    <button onclick="submitExam()" class="px-6 py-3 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 font-extrabold text-sm text-white shadow-lg transition-all">
+                        <i class="fa-solid fa-paper-plane mr-2"></i> NỘP BÀI THI
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- RESULT SCREEN -->
+        <section id="result-screen" class="hidden w-full max-w-2xl mx-auto glass-panel p-6 sm:p-8 rounded-3xl space-y-6 border border-purple-500/30">
+            <div class="text-center space-y-2">
+                <div class="w-16 h-16 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center text-3xl mx-auto border border-amber-500/40">
+                    <i class="fa-solid fa-award"></i>
+                </div>
+                <h2 class="text-2xl sm:text-3xl font-extrabold font-title text-white">Kết Quả Đánh Giá Bài Thi</h2>
+                <p id="result-topic-name" class="text-xs text-purple-300 font-semibold"></p>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+                <div class="bg-slate-900/80 p-4 rounded-2xl border border-slate-800 text-center">
+                    <span class="text-[11px] text-slate-400 font-bold uppercase block">Điểm Trắc Nghiệm</span>
+                    <span id="result-mcq-score" class="text-2xl font-black text-cyan-400">0/7</span>
+                </div>
+                <div class="bg-slate-900/80 p-4 rounded-2xl border border-slate-800 text-center">
+                    <span class="text-[11px] text-slate-400 font-bold uppercase block">Đánh Giá Tự Luận</span>
+                    <span id="result-essay-score" class="text-2xl font-black text-amber-400">Hoàn Thành</span>
+                </div>
+            </div>
+
+            <div class="space-y-3">
+                <h3 class="text-xs font-bold text-purple-300 uppercase tracking-wider"><i class="fa-solid fa-magnifying-glass-chart mr-1"></i> Gợi ý đáp án & Nhận xét:</h3>
+                <div id="result-essay-feedback" class="space-y-3 max-h-60 overflow-y-auto pr-1"></div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-3 pt-2">
+                <button onclick="showScreen('gacha-screen')" class="flex-1 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 hover:brightness-110 font-bold text-xs sm:text-sm text-white shadow-lg transition">
+                    <i class="fa-solid fa-rotate-right mr-1"></i> Tiếp Tục Gacha Đề Mới
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- STATS MODAL -->
+    <div id="stats-modal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="glass-panel bg-slate-900/95 border border-purple-500/40 rounded-3xl p-6 max-w-lg w-full space-y-4 relative max-h-[85vh] flex flex-col">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                <h3 class="text-lg font-bold font-title text-amber-300">
+                    <i class="fa-solid fa-trophy mr-2"></i> Thành Tích Luyện Tập
+                </h3>
+                <button onclick="closeStatsModal()" class="text-slate-400 hover:text-white">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+
+            <div class="bg-slate-800/80 p-3 rounded-2xl border border-slate-700 flex justify-between items-center text-xs">
+                <div>
+                    <div class="font-bold text-white text-sm">Học Viên Văn Học</div>
+                    <div id="modal-stat-count" class="text-slate-400">Đã làm: 0 bài</div>
+                </div>
+                <div class="text-right">
+                    <div class="text-[10px] text-slate-400 font-bold uppercase">Tổng Điểm Tích Lũy</div>
+                    <div id="modal-stat-score" class="text-lg font-black text-amber-400">0 ĐPT</div>
+                </div>
+            </div>
+
+            <div class="flex-1 overflow-y-auto space-y-2 pr-1">
+                <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">Lịch sử bài thi gần nhất:</h4>
+                <div id="history-list" class="space-y-2"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPT DATA & GAME LOGIC -->
+    <script>
+        // QUESTION BANK FOR GRADE 10 & 11 (EXACTLY 7 MCQs & 2 ESSAYS PER TOPIC)
+        const TOPICS_BANK = [
+            // ================= LỚP 10 =================
+            {
+                id: '10-ramayana',
+                grade: '10',
+                difficulty: 'EASY',
+                title: 'Rama buộc tội (Trích Sử thi Ramayana)',
+                author: 'Sử thi Ấn Độ',
+                desc: 'Khám phá đặc trưng của thể loại sử thi cổ đại và bài học về danh dự.',
+                text: `"Thấy Sita đứng trước mặt, Rama cảm thấy lòng mình dao động và đau đớn... Nhưng vì sợ mang tiếng xấu trước mặt mọi người, chàng đã cất lời:
+'Ta đã đánh bại kẻ thù, rửa sạch vết thương nhục nhã... Ta làm điều đó không phải vì nàng, mà vì danh dự của dòng họ gia tộc lừng lẫy của ta. Còn nàng, một người phụ nữ đã ở trong nhà kẻ khác, liệu ta có thể đón nhận nàng về lại hay không?'"`,
+                mcq: [
+                    { q: 'Trong đoạn trích "Rama buộc tội", nhân vật Rama đại diện cho điều gì?', options: ['Sức mạnh thần thánh tuyệt đối', 'Chuẩn mực đạo đức và danh dự cộng đồng', 'Tình yêu cá nhân mãnh liệt', 'Quyền lực độc tài của nhà vua'], answer: 1 },
+                    { q: 'Vì sao Rama lại đưa ra những lời buộc tội gay gắt đối với Sita trước cộng đồng?', options: ['Vì Rama đã hết tình cảm với Sita', 'Vì bảo vệ danh dự gia tộc và chuẩn mực đạo đức cộng đồng', 'Vì nghe theo lời xúi giục của quân thần', 'Vì Rama muốn cưới một người vợ khác'], answer: 1 },
+                    { q: 'Hành động bước vào ngọn lửa thần Agni của Sita chứng minh cho điều gì?', options: ['Sự tuyệt vọng và buông xuôi', 'Lòng trung trinh và sự trong sạch tuyệt đối', 'Sự tức giận đối với Rama', 'Sự chấp nhận hình phạt của cộng đồng'], answer: 1 },
+                    { q: 'Sử thi "Ramayana" thuộc nền văn học nào?', options: ['Văn học Hy Lạp cổ đại', 'Văn học Ấn Độ cổ đại', 'Văn học Trung Hoa cổ đại', 'Văn học La Mã cổ đại'], answer: 1 },
+                    { q: 'Thái độ của nhân dân và quân sư khi chứng kiến Sita bước vào ngọn lửa thần là gì?', options: ['Đồng tình và xua đuổi', 'Đau đớn, thương xót và xúc động', 'Thờ ơ, không quan tâm', 'Tức giận với Rama'], answer: 1 },
+                    { q: 'Nhân vật Rama và Sita phản ánh kiểu nhân vật nào trong sử thi?', options: ['Nhân vật đời thường', 'Nhân vật anh hùng và người phụ nữ lý tưởng', 'Nhân vật phản diện', 'Nhân vật hài hước'], answer: 1 },
+                    { q: 'Ý nghĩa biểu tượng của ngọn lửa thần Agni trong sử thi là gì?', options: ['Sự hủy diệt và trừng phạt', 'Biểu biểu tượng của sự chân lý, minh oan và trong sạch', 'Sự thịnh vượng của vương quốc', 'Chiến tranh và xung đột'], answer: 1 }
+                ],
+                essay: [
+                    { q: 'Phân tích ý nghĩa của hình tượng ngọn lửa thần Agni trong việc minh oan cho nàng Sita.' },
+                    { q: 'Nêu nhận xét của em về xung đột giữa tình yêu cá nhân và danh dự cộng đồng qua nhân vật Rama.' }
+                ]
+            },
+            {
+                id: '10-canh-ngay-he',
+                grade: '10',
+                difficulty: 'EASY',
+                title: 'Bảo kính cảnh giới (Bài 43 - Cảnh ngày hè)',
+                author: 'Nguyễn Trãi',
+                desc: 'Bức tranh thiên nhiên ngày hè rực rỡ và tấm lòng ưu quốc ái dân.',
+                text: `"Rồi hóng mát ta thanh hiên hống,
+Hòe lục đùn đùn tán rợp xòe.
+Thạch lựu hiên còn phun thức đỏ,
+Hồng liên trì đã nức mùi hương.
+Chợ cá làng ngư phủ lao xao,
+Dương cầm ve lặn mặt đầm reo.
+Lẽ có Ngu cầm đàn một tiếng,
+Dân giàu đủ khắp bốn phương."`,
+                mcq: [
+                    { q: 'Bài thơ "Cảnh ngày hè" của Nguyễn Trãi được viết bằng thể thơ nào?', options: ['Thất ngôn bát cú Đường luật', 'Thất ngôn xen lục ngôn', 'Song thất lục bát', 'Tự do'], answer: 1 },
+                    { q: 'Bức tranh cảnh ngày hè được miêu tả qua những hình ảnh sinh động nào?', options: ['Hòe lục đùn đùn, thạch lựu phun thức đỏ, hồng liên nức mùi hương', 'Cánh đồng lúa chín vàng ươm', 'Tuyết sương lạnh lẽo mùa đông', 'Rừng thu xanh ngắt một màu'], answer: 0 },
+                    { q: 'Khát vọng lớn nhất của Nguyễn Trãi thể hiện ở hai câu cuối bài thơ là gì?', options: ['Ước có đàn của vua Ngu Thuấn gảy cho dân giàu đủ', 'Ước được quy ẩn suốt đời ở Côn Sơn', 'Ước làm quan lớn trong triều đình', 'Ước đi chu du khắp thiên hạ'], answer: 0 },
+                    { q: 'Từ "đùn đùn" trong câu "Hòe lục đùn đùn tán rợp xòe" diễn tả trạng thái gì của thiên nhiên?', options: ['Sự héo hon, kiệt quệ', 'Sức sống dồi dào, cuồn cuộn trào dâng', 'Sự tĩnh lặng, êm đềm', 'Sự biến đổi đột ngột'], answer: 1 },
+                    { q: 'Âm thanh nào tạo nên nét sống động cho bức tranh làng quê ngày hè trong bài thơ?', options: ['Tiếng cuốc kêu chiều', 'Tiếng chợ cá lao xao và tiếng ve kêu', 'Tiếng suối chảy róc rách', 'Tiếng mưa rơi trên mái nhà'], answer: 1 },
+                    { q: 'Tâm trạng của tác giả khi hóng mát ở hiên nhà được thể hiện qua từ ngữ nào?', options: ['Rồi hóng mát (thư thái, rảnh rỗi)', 'U buồn, lo lắng', 'Thấu hiểu, xót xa', 'Tức giận, phẫn nộ'], answer: 0 },
+                    { q: 'Tư tưởng bao trùm toàn bộ sự nghiệp và thơ văn của Nguyễn Trãi là gì?', options: ['Tư tưởng lánh đời', 'Tư tưởng ưu quốc, ái dân (vì nước, vì dân)', 'Tư tưởng hưởng lạc', 'Tư tưởng duy tâm'], answer: 1 }
+                ],
+                essay: [
+                    { q: 'Cảm nhận của em về vẻ đẹp tâm hồn của Nguyễn Trãi qua bài thơ "Cảnh ngày hè".' },
+                    { q: 'Phân tích nghệ thuật sử dụng từ ngữ tài hoa và câu thơ lục ngôn trong bài thơ.' }
+                ]
+            },
+            {
+                id: '10-binh-ngo-dai-bao',
+                grade: '10',
+                difficulty: 'HARD',
+                title: 'Bình Ngô Đại Cáo',
+                author: 'Nguyễn Trãi',
+                desc: 'Bản tuyên ngôn độc lập thứ hai của dân tộc Việt Nam.',
+                text: `"Tệc thay! Như nước Đại Việt ta từ trước,
+Vốn xưng nền văn hiến đã lâu.
+Núi sông đất cõi đã chia,
+Phong tục Bắc Nam cũng khác.
+Từ Triệu, Đinh, Lý, Trần bao đời gây nền độc lập,
+Cùng Hán, Đường, Tống, Nguyên mỗi bên hùng bá một phương.
+Tuy mạnh yếu có lúc khác nhau,
+Song hào kiệt đời nào cũng có."`,
+                mcq: [
+                    { q: '"Bình Ngô đại cáo" được sáng tác sau sự kiện lịch sử quan trọng nào?', options: ['Chiến thắng Ngọc Hồi - Đống Đa', 'Đại thắng quân Minh, giải phóng đất nước (1427)', 'Đánh tan quân Nguyên Mông', 'Khởi nghĩa Lam Sơn bắt đầu'], answer: 1 },
+                    { q: 'Tư tưởng cốt lõi xuyên suốt tác phẩm "Bình Ngô đại cáo" là gì?', options: ['Tư tưởng Nhân nghĩa', 'Tư tưởng Trung quân', 'Tư tưởng Pháp trị', 'Tư tưởng Bị trị'], answer: 0 },
+                    { q: 'Những yếu tố nào được Nguyễn Trãi dùng để khẳng định chủ quyền dân tộc độc lập?', options: ['Văn hiến, lãnh thổ, phong tục, lịch sử, con người hào kiệt', 'Lực lượng quân đội đông đảo', 'Của cải vật chất dồi dào', 'Địa hình núi sông hiểm trở'], answer: 0 },
+                    { q: 'Thể loại "Cáo" có đặc điểm chính nào sau đây?', options: ['Thể văn nghị luận cổ, dùng để công bố sự kiện lớn', 'Thể thơ tự do', 'Thể truyện ngắn hư cấu', 'Thể kịch nói'], answer: 0 },
+                    { q: 'Tội ác của giặc Minh được Nguyễn Trãi tố cáo qua câu thơ nổi tiếng nào?', options: ['Trúc Nam Sơn không ghi hết tội, Nước Đông Hải không rửa sạch mùi', 'Nam quốc sơn hà Nam đế cư', 'Thương dân bọc xương nheo nhóc', 'Lòng dân ly tán khó cứu'], answer: 0 },
+                    { q: 'Hình tượng Lê Lợi trong giai đoạn đầu cuộc khởi nghĩa Lam Sơn được khắc họa như thế nào?', options: ['Một vị chủ tướng giàu ý chí, ngẫm vì lớn nghĩ sâu, đau lòng chiêu dân', 'Một người tướng bất mãn', 'Một vị vua tham quyền', 'Một dũng sĩ đơn độc'], answer: 0 },
+                    { q: 'Nghệ thuật nổi bật nhất của "Bình Ngô đại cáo" là gì?', options: ['Kết hợp lý lẽ sắc bén với tình cảm mãnh liệt, bút pháp bi hùng', 'Nghệ thuật miêu tả tâm lý nhân vật', 'Sử dụng nhiều yếu tố kỳ ảo', 'Lời thơ nhẹ nhàng, êm dịu'], answer: 0 }
+                ],
+                essay: [
+                    { q: 'Chứng minh "Bình Ngô đại cáo" là bản tuyên ngôn độc lập mang giá trị bản sắc dân tộc sâu sắc.' },
+                    { q: 'Phân tích tội ác của địch và khí thế sục sôi của nghĩa quân Lam Sơn trong bài cáo.' }
+                ]
+            },
+
+            // ================= LỚP 11 =================
+            {
+                id: '11-chi-pheo',
+                grade: '11',
+                difficulty: 'EASY',
+                title: 'Chí Phèo',
+                author: 'Nam Cao',
+                desc: 'Kiệt tác của văn học thực tế với giá trị nhân đạo sâu sắc.',
+                text: `"Hắn tỉnh dậy sau cơn say dài... Hắn nghe thấy những tiếng động quen thuộc của cuộc sống hằng ngày: tiếng chim hót ngoài cửa sổ vui vẻ quá, tiếng anh thuyền chài gõ mái hoe đuổi cá, tiếng người đi chợ về nói chuyện lao xao... 
+Những âm thanh ấy hôm nào chả có, nhưng hôm nay hắn mới nghe thấy. Chao ôi là buồn! Hắn nhớ lại thời trẻ, hắn từng mơ ước có một gia đình nho nhỏ, chồng cày thuê mướn, vợ dệt vải..."`,
+                mcq: [
+                    { q: 'Tác phẩm "Chí Phèo" lúc mới xuất bản lần đầu có tên là gì?', options: ['Làng Vũ Đại ngày ấy', 'Cái lò gạch cũ', 'Đôi lứa xứng đôi', 'Chí Phèo'], answer: 1 },
+                    { q: 'Chi tiết nào đã thức tỉnh bản tính "người" trong Chí Phèo sau đêm gặp Thị Nở?', options: ['Tiếng chim hót, tiếng người đi chợ và bát cháo hành', 'Bát phở bò nóng hổi', 'Rượu ngon', 'Lời chửi gay gắt của Bá Kiến'], answer: 0 },
+                    { q: 'Hiện tượng "Chí Phèo" phản ánh điều gì trong xã hội nông thôn Việt Nam trước năm 1945?', options: ['Hiện tượng nông dân bị tha hóa, lưu tán và bần cùng hóa', 'Tình yêu lứa đôi thắm thiết', 'Cuộc tranh giành quyền lực địa chủ', 'Tập quán hủ tục lạc hậu'], answer: 0 },
+                    { q: 'Ai là kẻ trực tiếp đẩy Chí Phèo vào con đường tù tội và tha hóa?', options: ['Thị Nở', 'Bá Kiến', 'Bà cô Thị Nở', 'Lý Cường'], answer: 1 },
+                    { q: 'Tiếng chửi của Chí Phèo ở đầu tác phẩm thể hiện tâm trạng gì?', options: ['Sự bất lực, khao khát giao tiếp nhưng bị xã hội loại trừ', 'Sự kiêu ngạo, coi thường mọi người', 'Sự vui vẻ, hưng phấn', 'Lòng biết ơn dân làng'], answer: 0 },
+                    { q: 'Ước mơ thời trẻ của Chí Phèo trước khi đi tù là gì?', options: ['Trở thành địa chủ giàu có', 'Một gia đình nho nhỏ, chồng cày thuê mướn, vợ dệt vải', 'Trở thành một anh hùng', 'Đi làm quan to'], answer: 1 },
+                    { q: 'Câu nói cuối cùng của Chí Phèo trước khi đâm chết Bá Kiến là gì?', options: ['Ai cho tao làm người lương thiện?', 'Tao muốn làm giàu!', 'Tao sẽ trả thù cả làng Vũ Đại!', 'Hãy cho tao rượu!'], answer: 0 }
+                ],
+                essay: [
+                    { q: 'Phân tích diễn biến tâm trạng của Chí Phèo từ khi gặp Thị Nở đến khi tìm đến nhà Bá Kiến.' },
+                    { q: 'Ý nghĩa biểu tượng của "Bát cháo hành" và "Cái lò gạch cũ" trong tác phẩm.' }
+                ]
+            },
+            {
+                id: '11-voi-vang',
+                grade: '11',
+                difficulty: 'EASY',
+                title: 'Vội Vàng',
+                author: 'Xuân Diệu',
+                desc: 'Tuyên ngôn yêu đời, khát khao sống cuồng nhiệt của nhà thơ "mới nhất trong các nhà thơ mới".',
+                text: `"Tôi muốn tắt nắng đi
+Cho màu đừng nhạt mất;
+Tôi muốn buộc gió lại
+Cho hương đừng bay đi.
+
+Của đơm đượm này đây hoa của đồng nội xanh rì;
+Này đây lá của cạ cành tơ phơ phất;
+Của yến anh này đây khúc tình ca;
+Và này đây ánh sáng chớp chớp mắt.
+Mỗi buổi sáng thần Vui Hằng gõ cửa;
+Tháng giêng ngon như một cặp môi gần..."`,
+                mcq: [
+                    { q: 'Xuân Diệu được mệnh danh là gì trong phong trào Thơ Mới?', options: ['Nhà thơ của tình yêu và tuổi trẻ', 'Nhà thơ cách mạng hào hùng', 'Nhà thơ của làng quê Việt Nam', 'Nhà thơ thần thoại huyền bí'], answer: 0 },
+                    { q: 'Hình ảnh "Tháng giêng ngon như một cặp môi gần" sử dụng biện pháp nghệ thuật gì?', options: ['So sánh và chuyển đổi cảm giác độc đáo', 'Ẩn dụ ẩn ngữ', 'Hoán dụ', 'Nói giảm nói tránh'], answer: 0 },
+                    { q: 'Triết lý sống của Xuân Diệu thể hiện qua bài thơ "Vội Vàng" là gì?', options: ['Sống gấp gáp, giao hòa và tận hưởng từng phút giây của cuộc đời', 'Sống an nhàn, quy ẩn', 'Sống buông thả không mục đích', 'Sống chờ thời cơ đến'], answer: 0 },
+                    { q: 'Nhịp điệu dồn dập ở khổ thơ cuối bài "Vội Vàng" thể hiện cảm xúc gì?', options: ['Sự cuồng nhiệt, hối hả khao khát ôm trọn sự sống', 'Sự buồn bã, thất vọng', 'Sự do dự, đắn đo', 'Sự hoài niệm quá khứ'], answer: 0 },
+                    { q: 'Theo Xuân Diệu, khoảng thời gian đẹp nhất của đời người là khi nào?', options: ['Tuổi trẻ', 'Tuổi già', 'Thời thơ ấu', 'Khi thành đạt'], answer: 0 },
+                    { q: 'Hình ảnh thiên nhiên trong bài thơ "Vội Vàng" hiện lên như thế nào?', options: ['Như một thiên đường trên mặt đất rực rỡ, tình tứ', 'U buồn, âm u', 'Hùng vĩ, hiểm trở', 'Lạnh lẽo, hoang sơ'], answer: 0 },
+                    { q: 'Các động từ mạnh được Xuân Diệu sử dụng ở đoạn cuối bài thơ gồm:', options: ['Thâu, ôm, riết, say, thâu, dâng', 'Nhìn, ngắm, chờ, mong', 'Nói, cười, hát, ca', 'Chạy, nhảy, bước, đi'], answer: 0 }
+                ],
+                essay: [
+                    { q: 'Phân tích quan niệm thời gian độc đáo và mới mẻ của Xuân Diệu trong bài thơ "Vội Vàng".' },
+                    { q: 'Cảm nhận đoạn thơ từ "Tôi muốn tắt nắng đi" đến "Tháng giêng ngon như một cặp môi gần".' }
+                ]
+            },
+            {
+                id: '11-truyen-kieu-nguyen-du',
+                grade: '11',
+                difficulty: 'HARD',
+                title: 'Đoạn trích "Trao Duyên" (Truyện Kiều)',
+                author: 'Nguyễn Du',
+                desc: 'Đỉnh cao nghệ thuật miêu tả nội tâm nhân vật và bi kịch tình yêu.',
+                text: `"Cậy em em có chịu lời,
+Ngồi lên cho chị lạy rồi sẽ thưa.
+Giữa đường đứt gánh tương tư,
+Keo loan chắp mối tơ thừa mặc em.
+Kể từ khi gặp chàng Kim,
+Khi ngày quạt ước khi đêm chén thề.
+Sự đâu sóng gió bất kỳ,
+Hiếu tình khôn lẽ hai bề vẹn hai."`,
+                mcq: [
+                    { q: 'Trong "Trao Duyên", Thúy Kiều đã dùng từ ngữ nào khi nhờ vả em?', options: ['"Cậy" - vừa nhờ vả, vừa nài ép, vô cùng nể trọng', '"Xin" - cầu xin bình thường', '"Bắt" - mệnh lệnh ép buộc', '"Mời" - lời mời xã giao'], answer: 0 },
+                    { q: 'Bi kịch lớn nhất của Thúy Kiều thể hiện ở đoạn trích "Trao Duyên" là gì?', options: ['Bi kịch vỡ tan tình yêu đầu đời, hy sinh hạnh phúc cá nhân vì chữ hiếu', 'Sợ bị nghèo khó', 'Sợ bị cha mẹ trách phạt', 'Sợ Thúy Vân từ chối'], answer: 0 },
+                    { q: 'Thành công nghệ thuật nổi bật nhất của Nguyễn Du trong đoạn trích là gì?', options: ['Nghệ thuật miêu tả nội tâm nhân vật sâu sắc, tinh tế', 'Nghệ thuật tả cảnh thiên nhiên', 'Nghệ thuật xây dựng cốt truyện kịch tính', 'Nghệ thuật sử dụng từ Hán Việt'], answer: 0 },
+                    { q: 'Những kỷ vật tình yêu mà Thúy Kiều trao lại cho Thúy Vân là gì?', options: ['Chiếc vành, tờ thư, phím đàn, mảnh hương bối', 'Trang sức vàng bạc', 'Gương soi và lược', 'Quần áo đẹp'], answer: 0 },
+                    { q: 'Thái độ của Thúy Kiều đối với Kim Trọng ở cuối đoạn trích là gì?', options: ['Cảm thấy phụ lòng Kim Trọng, nghẹn ngào gọi tên người yêu trong đau đớn', 'Trách móc Kim Trọng', 'Quên đi Kim Trọng', 'Oán hận số phận'], answer: 0 },
+                    { q: 'Vì sao Thúy Kiều lại phải trao duyên cho Thúy Vân?', options: ['Vì gia đình gặp biến cố lớn, Kiều phải bán mình chuộc cha và em', 'Vì Kiều muốn đi xa', 'Vì Kim Trọng yêu Thúy Vân', 'Vì Kiều không còn yêu Kim Trọng'], answer: 0 },
+                    { q: 'Cụm từ "Thịt nát xương mòn" và "Trúc mai hèn mòn" thể hiện điều gì ở Thúy Kiều?', options: ['Lòng biết ơn sâu sắc đối với sự hy sinh của Thúy Vân', 'Sự lo sợ cái chết', 'Sự giận dữ', 'Sự vô tha'], answer: 0 }
+                ],
+                essay: [
+                    { q: 'Phân tích nghệ thuật miêu tả nội tâm giằng xé của Thúy Kiều khi trao duyên cho em.' },
+                    { q: 'Đánh giá tấm lòng nhân đạo cao cả của Nguyễn Du qua bi kịch tình yêu trong "Trao Duyên".' }
+                ]
+            }
+        ];
+
+        // APP STATE
+        let activeGradeFilter = 'ALL';
+        let currentTopic = null;
+        let selectedAnswers = {};
+        let userStats = JSON.parse(localStorage.getItem('gacha_literary_v2_stats')) || { history: [], points: 0 };
+
+        function setGradeFilter(grade) {
+            activeGradeFilter = grade;
+            ['ALL', '10', '11'].forEach(g => {
+                const btn = document.getElementById(`btn-grade-${g.toLowerCase()}`);
+                if (btn) {
+                    if (g === grade) {
+                        btn.className = "px-2.5 py-1 rounded-lg text-xs font-bold transition bg-purple-600 text-white";
+                    } else {
+                        btn.className = "px-2.5 py-1 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white";
+                    }
+                }
+            });
+            const badge = document.getElementById('current-grade-badge');
+            if (badge) {
+                badge.innerText = grade === 'ALL' ? 'Chương Trình Ngữ Văn 10 & 11' : `Đang Lọc: Ngữ Văn Lớp ${grade}`;
+            }
+        }
+
+        function spinGacha() {
+            let pool = TOPICS_BANK;
+            if (activeGradeFilter !== 'ALL') {
+                pool = TOPICS_BANK.filter(t => t.grade === activeGradeFilter);
+            }
+
+            const dial = document.getElementById('gacha-dial');
+            const spinBtn = document.getElementById('spin-btn');
+            spinBtn.disabled = true;
+            spinBtn.classList.add('opacity-50');
+
+            const randomDeg = 1440 + Math.floor(Math.random() * 360);
+            dial.style.transform = `rotate(${randomDeg}deg)`;
+
+            setTimeout(() => {
+                const randomIndex = Math.floor(Math.random() * pool.length);
+                currentTopic = pool[randomIndex];
+                spinBtn.disabled = false;
+                spinBtn.classList.remove('opacity-50');
+                dial.style.transform = 'rotate(0deg)';
+                startExam(currentTopic);
+            }, 3000);
+        }
+
+        function startExam(topic) {
+            selectedAnswers = {};
+            showScreen('exam-screen');
+
+            // Header info
+            const luckTag = document.getElementById('exam-luck-tag');
+            if (topic.difficulty === 'EASY') {
+                luckTag.className = "px-3 py-0.5 rounded-full text-xs font-black uppercase tracking-wider bg-emerald-500/20 text-emerald-300 border border-emerald-500/30";
+                luckTag.innerText = "🎉 HÊN (CƠ BẢN)";
+            } else {
+                luckTag.className = "px-3 py-0.5 rounded-full text-xs font-black uppercase tracking-wider bg-rose-500/20 text-rose-300 border border-rose-500/30";
+                luckTag.innerText = "💀 XUI (NÂNG CAO)";
+            }
+
+            document.getElementById('exam-grade-tag').innerText = `Lớp ${topic.grade}`;
+            document.getElementById('exam-topic-title').innerText = `${topic.title} - ${topic.author}`;
+            document.getElementById('exam-topic-desc').innerText = topic.desc;
+
+            // Render Text Excerpt
+            const excerptBox = document.getElementById('poem-excerpt-box');
+            const excerptContent = document.getElementById('poem-excerpt-content');
+            if (topic.text) {
+                excerptContent.innerText = topic.text;
+                excerptBox.classList.remove('hidden');
+            } else {
+                excerptBox.classList.add('hidden');
+            }
+
+            // Render MCQ (Exactly 7 Questions)
+            const mcqContainer = document.getElementById('mcq-container');
+            mcqContainer.innerHTML = topic.mcq.map((q, idx) => `
+                <div class="bg-slate-900/90 p-4 rounded-2xl border border-slate-800 space-y-3">
+                    <p class="text-sm font-bold text-slate-100"><span class="text-purple-400">Câu ${idx + 1}:</span> ${q.q}</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        ${q.options.map((opt, optIdx) => `
+                            <button onclick="selectMcqOption(${idx}, ${optIdx})" id="mcq-btn-${idx}-${optIdx}" class="mcq-opt-btn text-left p-3 rounded-xl bg-slate-800 hover:bg-purple-900/40 border border-slate-700/60 text-xs font-semibold text-slate-300 transition">
+                                <span class="font-bold text-purple-400 mr-1.5">${String.fromCharCode(65 + optIdx)}.</span> ${opt}
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+
+            // Render Essay (Exactly 2 Questions)
+            const essayContainer = document.getElementById('essay-container');
+            essayContainer.innerHTML = topic.essay.map((e, idx) => `
+                <div class="bg-slate-900/90 p-4 rounded-2xl border border-slate-800 space-y-3">
+                    <p class="text-sm font-bold text-slate-100"><span class="text-pink-400">Câu ${idx + 1}:</span> ${e.q}</p>
+                    <textarea id="essay-input-${idx}" rows="4" placeholder="Nhập bài làm tự luận của bạn..." class="w-full p-3 rounded-xl bg-slate-950 border border-slate-800 text-xs text-slate-200 focus:outline-none focus:border-purple-500 font-sans"></textarea>
+                </div>
+            `).join('');
+
+            switchExamTab('mcq');
+        }
+
+        function selectMcqOption(qIdx, optIdx) {
+            selectedAnswers[qIdx] = optIdx;
+            const parent = document.querySelectorAll('#mcq-container > div')[qIdx];
+            const buttons = parent.querySelectorAll('.mcq-opt-btn');
+            buttons.forEach((btn, idx) => {
+                if (idx === optIdx) {
+                    btn.className = "mcq-opt-btn text-left p-3 rounded-xl bg-purple-600 border border-purple-400 text-xs font-bold text-white shadow-md";
+                } else {
+                    btn.className = "mcq-opt-btn text-left p-3 rounded-xl bg-slate-800 border border-slate-700/60 text-xs font-semibold text-slate-400 opacity-70";
+                }
+            });
+        }
+
+        function switchExamTab(tab) {
+            const mcqPart = document.getElementById('part-mcq');
+            const essayPart = document.getElementById('part-essay');
+            const btnMcq = document.getElementById('tab-mcq-btn');
+            const btnEssay = document.getElementById('tab-essay-btn');
+
+            if (tab === 'mcq') {
+                mcqPart.classList.remove('hidden');
+                essayPart.classList.add('hidden');
+                btnMcq.className = "px-4 py-2 rounded-xl bg-purple-600 text-white font-bold text-xs sm:text-sm flex items-center gap-2 transition";
+                btnEssay.className = "px-4 py-2 rounded-xl bg-slate-800 text-slate-400 hover:text-white font-bold text-xs sm:text-sm flex items-center gap-2 transition";
+            } else {
+                mcqPart.classList.add('hidden');
+                essayPart.classList.remove('hidden');
+                btnEssay.className = "px-4 py-2 rounded-xl bg-purple-600 text-white font-bold text-xs sm:text-sm flex items-center gap-2 transition";
+                btnMcq.className = "px-4 py-2 rounded-xl bg-slate-800 text-slate-400 hover:text-white font-bold text-xs sm:text-sm flex items-center gap-2 transition";
+            }
+        }
+
+        function submitExam() {
+            let correctMcq = 0;
+            currentTopic.mcq.forEach((q, idx) => {
+                if (selectedAnswers[idx] === q.answer) correctMcq++;
+            });
+
+            // Earn points
+            const earnedPoints = correctMcq * 10 + 20;
+            userStats.points += earnedPoints;
+            userStats.history.unshift({
+                topic: currentTopic.title,
+                grade: currentTopic.grade,
+                score: `${correctMcq}/${currentTopic.mcq.length}`,
+                date: new Date().toLocaleDateString('vi-VN')
+            });
+            localStorage.setItem('gacha_literary_v2_stats', JSON.stringify(userStats));
+
+            // Display results
+            document.getElementById('result-topic-name').innerText = `Tác phẩm: ${currentTopic.title} (Ngữ Văn ${currentTopic.grade})`;
+            document.getElementById('result-mcq-score').innerText = `${correctMcq}/${currentTopic.mcq.length}`;
+
+            const feedbackContainer = document.getElementById('result-essay-feedback');
+            feedbackContainer.innerHTML = currentTopic.essay.map((e, idx) => {
+                const userText = document.getElementById(`essay-input-${idx}`)?.value || '';
+                return `
+                    <div class="p-3 bg-slate-900 rounded-xl border border-slate-800 space-y-1">
+                        <p class="text-xs font-bold text-pink-300">Câu ${idx + 1}: ${e.q}</p>
+                        <p class="text-[11px] text-slate-400"><strong>Bài làm của bạn:</strong> ${userText ? userText : '<i>Chưa nhập bài làm</i>'}</p>
+                        <p class="text-[11px] text-emerald-400"><strong>Gợi ý:</strong> Tập trung vào phân tích dẫn chứng, nghệ thuật miêu tả, tư tưởng nhân đạo/triết lý sống.</p>
+                    </div>
+                `;
+            }).join('');
+
+            showScreen('result-screen');
+        }
+
+        function confirmCancelExam() {
+            if (confirm("Bạn có chắc chắn muốn hủy bài thi này và quay lại không?")) {
+                showScreen('gacha-screen');
+            }
+        }
+
+        function showScreen(id) {
+            ['gacha-screen', 'exam-screen', 'result-screen'].forEach(s => {
+                document.getElementById(s).classList.add('hidden');
+            });
+            document.getElementById(id).classList.remove('hidden');
+        }
+
+        function openStatsModal() {
+            document.getElementById('modal-stat-count').innerText = `Đã làm: ${userStats.history.length} bài`;
+            document.getElementById('modal-stat-score').innerText = `${userStats.points} ĐPT`;
+
+            const historyList = document.getElementById('history-list');
+            if (userStats.history.length === 0) {
+                historyList.innerHTML = `<div class="text-xs text-slate-500 text-center py-4">Chưa có lịch sử làm bài</div>`;
+            } else {
+                historyList.innerHTML = userStats.history.map(item => `
+                    <div class="p-2.5 bg-slate-800/60 rounded-xl border border-slate-700/50 flex justify-between items-center text-xs">
+                        <div>
+                            <div class="font-bold text-slate-200">${item.topic} (Lớp ${item.grade})</div>
+                            <div class="text-[10px] text-slate-400">${item.date}</div>
+                        </div>
+                        <div class="font-black text-amber-400">${item.score}</div>
+                    </div>
+                `).join('');
+            }
+
+            document.getElementById('stats-modal').classList.remove('hidden');
+        }
+
+        function closeStatsModal() {
+            document.getElementById('stats-modal').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
